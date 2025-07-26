@@ -1,5 +1,8 @@
 # Documentação: Validador de CPF - Regra de Negócio
 
+[![Test Coverage](https://raw.githubusercontent.com/felipesalome/CpfValidator/main/badges/jacoco.svg)](https://github.com/felipesalome/CpfValidator/actions)
+[![Branches Coverage](https://raw.githubusercontent.com/felipesalome/CpfValidator/main/badges/branches.svg)](https://github.com/felipesalome/CpfValidator/actions)
+
 ## 1. Introdução
 O validador de CPF é um componente que verifica a autenticidade de números do Cadastro de Pessoas Físicas brasileiro. Esta documentação explica exclusivamente a regra de negócio e a abordagem TDD para implementação, **sem qualquer menção a código**.
 
