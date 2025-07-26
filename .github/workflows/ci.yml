@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Necessário para o commit dos badges
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -19,28 +19,36 @@ jobs:
           cache: 'gradle'
       
       - run: chmod +x gradlew
-      - run: ./gradlew build
+      
+      # Etapa modificada: Executa explicitamente o relatório de cobertura
+      - run: ./gradlew jacocoTestReport
+      
+      # Verificação crítica: Lista o conteúdo do diretório de relatórios
+      - name: Verify JaCoCo report
+        run: |
+          echo "Conteúdo do diretório de relatórios:"
+          ls -la build/reports/jacoco/test/
+          echo "Caminho completo do CSV:"
+          realpath build/reports/jacoco/test/jacocoTestReport.csv
       
       - name: Generate coverage badges
         id: jacoco
         uses: cicirello/jacoco-badge-generator@v2
         with:
           jacoco-csv-file: build/reports/jacoco/test/jacocoTestReport.csv
-          badges-directory: badges  # Pasta específica para organização
-          generate-branches-badge: true  # Gera badge adicional
+          badges-directory: badges
+          generate-branches-badge: true
       
-      - name: Commit and push the badge (if it changed)
+      - name: Commit and push the badge
         uses: EndBug/add-and-commit@v7
         with:
           default_author: github_actions
           message: 'Update coverage badges'
-          add: 'badges/*.svg'  # Apenas os badges na pasta específica
-          # Comportamento inteligente: só commita se houver alteração
+          add: 'badges/*.svg'
       
       - name: Upload test report
         uses: actions/upload-artifact@v4
-        if: ${{ always() }}
         with:
           name: testReport
           path: build/reports/tests/test
-          retention-days: 1  # Mantém por 1 dia conforme solicitado
+          retention-days: 1
