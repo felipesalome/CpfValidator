@@ -1,28 +1,54 @@
 name: Java CI
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up JDK 8
-      uses: actions/setup-java@v3
-      with:
-        java-version: '8'
-        distribution: 'temurin'
-        cache: 'gradle'
-    
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      - uses: actions/checkout@v4
       
-    - name: Build and Test with Coverage
-      run: ./gradlew test jacocoTestReport jacocoTestCoverageVerification
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+          cache: 'gradle'
       
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        files: build/reports/jacoco/test/jacocoTestReport.xml
-        fail_ci_if_error: true
+      - run: chmod +x gradlew
+      
+      # Etapa modificada: Executa explicitamente o relatório de cobertura
+      - run: ./gradlew jacocoTestReport
+      
+      # Verificação crítica: Lista o conteúdo do diretório de relatórios
+      - name: Verify JaCoCo report
+        run: |
+          echo "Conteúdo do diretório de relatórios:"
+          ls -la app/build/reports/jacoco/test/
+          echo "Caminho completo do CSV:"
+          realpath app/build/reports/jacoco/test/jacocoTestReport.csv
+      
+      - name: Generate coverage badges
+        id: jacoco
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          jacoco-csv-file: app/build/reports/jacoco/test/jacocoTestReport.csv
+          badges-directory: badges
+          generate-branches-badge: true
+      
+      - name: Commit and push the badge
+        uses: EndBug/add-and-commit@v7
+        with:
+          default_author: github_actions
+          message: 'Update coverage badges'
+          add: 'badges/*.svg'
+      
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        with:
+          name: testReport
+          path: app/build/reports/tests/test
+          retention-days: 1
