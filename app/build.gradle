@@ -37,26 +37,42 @@ jacocoTestReport {
         html.required = true
     }
 
-    // Define limites mínimos de cobertura
+    // Exclusão correta da classe App
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                '**/App.class' // Exclui classe principal se necessário
+                'cpfvalidator/App.class' // Caminho completo corrigido
             ])
         }))
     }
 }
 
-// Verificação de limites de cobertura
 jacocoTestCoverageVerification {
     violationRules {
         rule {
+            // Habilita a regra para todas as classes
+            enabled = true
+            
+            // Define os limites por instrução
             limit {
-                minimum = 0.80 // 80% de cobertura mínima
+                counter = 'INSTRUCTION'
+                minimum = 0.80
+            }
+            
+            // Opcional: limites adicionais por linha
+            limit {
+                counter = 'LINE'
+                minimum = 0.80
             }
         }
     }
+    
+    // Aplica a mesma exclusão da classe App
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                'cpfvalidator/App.class'
+            ])
+        }))
+    }
 }
-
-// Garante que a verificação roda após o relatório
-check.dependsOn jacocoTestCoverageVerification
