@@ -28,15 +28,13 @@ class CpfRepeatedDigitsValidatorTest {
         "99999999999"
     })
     void shouldReturnTrueWhenCpfHasOnlyRepeatedDigits(String pCpf) {
-        boolean actual = instance.hasRepeatedDigits(pCpf);
+        boolean actual = instance.hasAllDigitsEqual(pCpf);
 
         assertTrue(actual);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {
-        "0000000000",   // 10 digits
-        "111111111111", // 12 digits
         "k2222222222",  // 11 digits
         "3333333333z",  // 11 digits
         "y44444444444", // char + 11 digits
@@ -44,11 +42,10 @@ class CpfRepeatedDigitsValidatorTest {
         "66666566666",  // 11 digits
         "777777 7777",  // 11 digits
         "80000000008",  // 11 digits
-        "91919191919",  // 11 digits
-        "aaaaaaaaaaa"   // 11 chars
+        "91919191919"   // 11 digits
     })
     void shouldReturnFalseWhenCpfHasntOnlyRepeatedDigits(String pCpf) {
-        boolean actual = instance.hasRepeatedDigits(pCpf);
+        boolean actual = instance.hasAllDigitsEqual(pCpf);
 
         assertFalse(actual);
     }

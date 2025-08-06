@@ -17,11 +17,10 @@ public class CpfCheckDigitCalculator {
 
     private int calculateDigit(String pCpf, int pDigitVerifierWeight) {
         int total = 0;
-        String[] cpfDigits = pCpf.split("");
         int digitPosition = 0;
 
         for (int i = pDigitVerifierWeight; i > 1; i--) {
-            int digitValue = Integer.parseInt(cpfDigits[digitPosition++]);
+            int digitValue = Character.getNumericValue(pCpf.charAt(digitPosition++));
             total += (digitValue * i);
         }
 
