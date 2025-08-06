@@ -26,7 +26,7 @@ public class CpfValidator {
             return false;
         }
 
-        if (repeatedDigitsValidator.hasRepeatedDigits(cpfSanitized)) {
+        if (repeatedDigitsValidator.hasAllDigitsEqual(cpfSanitized)) {
             return false;
         }
 
